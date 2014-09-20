@@ -97,13 +97,13 @@ class OpenVisualizerWeb(eventBusClient.eventBusClient):
         self.websrv.route(path='/eventdata',                              callback=self._getEventData)
         self.websrv.route(path='/wiresharkDebug/:enabled',                callback=self._setWiresharkDebug)
         self.websrv.route(path='/gologicDebug/:enabled',                  callback=self._setGologicDebug)
-        self.websrv.route(path='/topology',                               callback=self._topologyPage)
-        self.websrv.route(path='/topology/data',                          callback=self._topologyData)
-        self.websrv.route(path='/topology/motes',         method='POST',  callback=self._topologyMotesUpdate)
-        self.websrv.route(path='/topology/connections',   method='PUT',   callback=self._topologyConnectionsCreate)
-        self.websrv.route(path='/topology/connections',   method='POST',  callback=self._topologyConnectionsUpdate)
-        self.websrv.route(path='/topology/connections',   method='DELETE',callback=self._topologyConnectionsDelete)
-        self.websrv.route(path='/topology/route',         method='GET',   callback=self._topologyRouteRetrieve)
+        self.websrv.route(path='/map',                                    callback=self._mapPage)
+        self.websrv.route(path='/map/data',                               callback=self._mapData)
+        self.websrv.route(path='/map/motes',              method='POST',  callback=self._mapMotesUpdate)
+        self.websrv.route(path='/map/connections',        method='PUT',   callback=self._mapConnectionsCreate)
+        self.websrv.route(path='/map/connections',        method='POST',  callback=self._mapConnectionsUpdate)
+        self.websrv.route(path='/map/connections',        method='DELETE',callback=self._mapConnectionsDelete)
+        self.websrv.route(path='/map/route',              method='GET',   callback=self._mapRouteRetrieve)
         self.websrv.route(path='/static/<filepath:path>',                 callback=self._serverStatic)
     
     @view('moteview.tmpl')
@@ -202,24 +202,24 @@ class OpenVisualizerWeb(eventBusClient.eventBusClient):
         return self._getEventData()
     
     def _showDAG(self):
-        states,edges = self.app.topology.getDAG()  
+        states,edges = self.app.map.getDAG()  
         return { 'states': states, 'edges': edges }
     
     @view('routing.tmpl')
     def _showRouting(self):
         return {}
         
-    @view('topology.tmpl')
-    def _topologyPage(self):
+    @view('map.tmpl')
+    def _mapPage(self):
         '''
         Retrieve the HTML/JS page.
         '''
         
         return {}
     
-    def _topologyData(self):
+    def _mapData(self):
         '''
-        Retrieve the topology data, in JSON format.
+        Retrieve the map data, in JSON format.
         '''
         
         # motes
@@ -251,7 +251,7 @@ class OpenVisualizerWeb(eventBusClient.eventBusClient):
         
         return data
     
-    def _topologyMotesUpdate(self):
+    def _mapMotesUpdate(self):
         
         motesTemp = {}
         for (k,v) in bottle.request.forms.items():
@@ -274,7 +274,7 @@ class OpenVisualizerWeb(eventBusClient.eventBusClient):
             mh = self.engine.getMoteHandlerById(v['id'])
             mh.setLocation(v['lat'],v['lon'])
     
-    def _topologyConnectionsCreate(self):
+    def _mapConnectionsCreate(self):
         
         data = bottle.request.forms
         assert sorted(data.keys())==sorted(['fromMote', 'toMote'])
@@ -284,7 +284,7 @@ class OpenVisualizerWeb(eventBusClient.eventBusClient):
         
         self.engine.propagation.createConnection(fromMote,toMote)
     
-    def _topologyConnectionsUpdate(self):
+    def _mapConnectionsUpdate(self):
         data = bottle.request.forms
         assert sorted(data.keys())==sorted(['fromMote', 'toMote', 'pdr'])
         
@@ -294,7 +294,7 @@ class OpenVisualizerWeb(eventBusClient.eventBusClient):
         
         self.engine.propagation.updateConnection(fromMote,toMote,pdr)
     
-    def _topologyConnectionsDelete(self):
+    def _mapConnectionsDelete(self):
         
         data = bottle.request.forms
         assert sorted(data.keys())==sorted(['fromMote', 'toMote'])
@@ -304,7 +304,7 @@ class OpenVisualizerWeb(eventBusClient.eventBusClient):
         
         self.engine.propagation.deleteConnection(fromMote,toMote)
     
-    def _topologyRouteRetrieve(self):
+    def _mapRouteRetrieve(self):
         
         data = bottle.request.query
         

@@ -41,7 +41,7 @@
             var busyDrawingConnection  = false;
             
             /**
-            \brief Initialize the topology display
+            \brief Initialize the map display
             */
             function initialize() {
                 
@@ -88,30 +88,30 @@
                 )
                 
                 // load mote data
-                getTopologyData();
+                getMapData();
             }
             
             /**
-            \brief Retrieve the topology data from the server.
+            \brief Retrieve the map data from the server.
             */
-            function getTopologyData() {
+            function getMapData() {
                 
                 if (mapLock==false) {
                     $.ajax({
                         type:    "GET",
-                        url:      "/topology/data",
+                        url:      "/map/data",
                         success:  handleNewData,
                     })
                     .fail(function() {
-                        console.log("ERROR: could not GET topology data");
+                        console.log("ERROR: could not GET map data");
                     });
                 }
                 
-                window.setTimeout(getTopologyData,DATA_LOAD_PERIOD);
+                window.setTimeout(getMapData,DATA_LOAD_PERIOD);
             }
             
             /**
-            \brief Update the topology using the new data.
+            \brief Update the map using the new data.
             */
             function handleNewData(newData) {
                 var i;
@@ -342,7 +342,7 @@
                 
                 $.ajax({
                     type:    "POST",
-                    url:     "/topology/motes",
+                    url:     "/map/motes",
                     data:    {
                         'motes': tempMotes,
                     }
@@ -351,18 +351,18 @@
                     console.log("INFO: new motePositions successfully POSTed to server.");
                 })
                 .fail(function() {
-                    console.log("ERROR: could not POST updated topology data.");
+                    console.log("ERROR: could not POST updated map data.");
                 })
                 .always(function() {
                     
                     // get new data from server
                     $.ajax({
                         type:    "GET",
-                        url:      "/topology/data",
+                        url:      "/map/data",
                         success:  handleNewData,
                     })
                     .fail(function() {
-                        console.log("ERROR: could not GET topology data");
+                        console.log("ERROR: could not GET map data");
                     })
                     .always(function() {
                         
@@ -375,7 +375,7 @@
             function getRoute(id) {
                 $.ajax({
                     type:    "GET",
-                    url:     "/topology/route",
+                    url:     "/map/route",
                     data:    {
                         'destination': id,
                     },
@@ -464,7 +464,7 @@
                 
                 $.ajax({
                     type:    "PUT",
-                    url:     "/topology/connections",
+                    url:     "/map/connections",
                     data:    {
                         'fromMote': fromMote,
                         'toMote':   toMote,
@@ -481,11 +481,11 @@
                     // get new data from server
                     $.ajax({
                         type:     "GET",
-                        url:      "/topology/data",
+                        url:      "/map/data",
                         success:  handleNewData,
                     })
                     .fail(function() {
-                        console.log("ERROR: could not GET topology data");
+                        console.log("ERROR: could not GET map data");
                     })
                     .always(function() {
                         
@@ -527,7 +527,7 @@
                 // send to server
                 $.ajax({
                     type:    "POST",
-                    url:     "/topology/connections",
+                    url:     "/map/connections",
                     data:    {
                         'fromMote': fromMote,
                         'toMote':   toMote,
@@ -545,11 +545,11 @@
                     // get new data from server
                     $.ajax({
                         type:     "GET",
-                        url:      "/topology/data",
+                        url:      "/map/data",
                         success:  handleNewData,
                     })
                     .fail(function() {
-                        console.log("ERROR: could not GET topology data");
+                        console.log("ERROR: could not GET map data");
                     })
                     .always(function() {
                         
@@ -567,7 +567,7 @@
                 // send to server
                 $.ajax({
                     type:    "DELETE",
-                    url:     "/topology/connections",
+                    url:     "/map/connections",
                     data:    {
                         'fromMote': fromMote,
                         'toMote':   toMote,
@@ -584,11 +584,11 @@
                     // get new data from server
                     $.ajax({
                         type:     "GET",
-                        url:      "/topology/data",
+                        url:      "/map/data",
                         success:  handleNewData,
                     })
                     .fail(function() {
-                        console.log("ERROR: could not GET topology data");
+                        console.log("ERROR: could not GET map data");
                     })
                     .always(function() {
                         
@@ -613,7 +613,7 @@
 			<div id="page-wrapper">
 	            <div class="row">
 	                <div class="col-lg-12">
-	                    <h1 class="page-header">Topology</h1>
+	                    <h1 class="page-header">Map</h1>
 	                </div>
 	            </div>
 

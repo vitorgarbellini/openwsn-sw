@@ -89,7 +89,7 @@
 
 		        <div class="row">
 		            <div class="col-lg-6">
-		            	<h5>Mote</h5>
+		            	<h5>Mote status: <span id="sync_fld"></span></h5>
 	                    <div class="list-group">
 	                        <a class="list-group-item">
 	                            <i class="fa fa-upload fa-fw"></i> Prefix
@@ -299,7 +299,15 @@
 									        
 									        $("#dagroot_fld").text(      hasJson && idJson.isDAGroot > 0 ? 'Yes' : 'No');
 									        $("#bridge_fld").text(       hasJson && idJson.isBridge > 0 ? 'Yes' : 'No');
-									        $("#sync_fld").text(         hasJson && syncJson.isSync > 0 ? 'Synchronized!' : 'Not synchronized');
+									        
+									        if (hasJson && syncJson.isSync > 0) {
+												$("#sync_fld").text('Synchronized!');
+												$("#sync_fld").attr('class', 'text-success');
+											}else {
+												$("#sync_fld").text('Not synchronized');
+												$("#sync_fld").attr('class', 'text-danger');
+											}
+									        
 									        $("#pan_fld").text(          hasJson ? idJson.myPANID                  : '');
 									        $("#asn_fld").text(          hasJson ? asnJson.asn                     : '');
 									        $("#dagrank_fld").text(      hasJson ? dagrankJson.myDAGrank           : '');
